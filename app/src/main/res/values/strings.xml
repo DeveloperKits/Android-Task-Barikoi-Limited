@@ -4,4 +4,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="BariKoiApiKey">bkoi_e0a87a6dea3f2ec5244147a6db2aef70687636e4ca331381ae378e0d44268fbf</string>
+    <string name="your_location">Your Location</string>
+    <string name="nearby_bank">Nearby Bank</string>
 </resources>

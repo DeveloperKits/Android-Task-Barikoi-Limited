@@ -4,11 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mapFragment">
+    app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.akashdas.task2barikoi.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.akashdas.task2barikoi.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_main_to_map"
+            app:destination="@id/mapFragment" />
+    </fragment>
 </navigation>
