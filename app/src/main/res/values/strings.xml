@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Task 2 Barikoi</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="BariKoiApiKey">bkoi_e0a87a6dea3f2ec5244147a6db2aef70687636e4ca331381ae378e0d44268fbf</string>
+</resources>
