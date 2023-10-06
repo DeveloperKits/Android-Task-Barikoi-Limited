@@ -1,4 +1,4 @@
-package com.akashdas.task2barikoi
+package com.akashdas.task2barikoi.Fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,8 +8,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import com.akashdas.task2barikoi.Dialog.BottomSheetDialog
+import com.akashdas.task2barikoi.R
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
@@ -26,6 +30,11 @@ class MapFragment : Fragment() {
     private lateinit var map: MapboxMap
     private lateinit var mapView: MapView
 
+    private lateinit var customInfoWindowView: View
+    private lateinit var customInfoWindowTitle: TextView
+    private lateinit var customInfoWindowSnippet: TextView
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,6 +42,11 @@ class MapFragment : Fragment() {
         Mapbox.getInstance(requireActivity())
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         mapView = view.findViewById(R.id.mapView)
+
+        // Inflate the custom info window layout
+        customInfoWindowView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_info_window, null)
+        customInfoWindowTitle = customInfoWindowView.findViewById(R.id.titleTextView)
+        customInfoWindowSnippet = customInfoWindowView.findViewById(R.id.snippetTextView)
 
         return view
     }
@@ -50,16 +64,21 @@ class MapFragment : Fragment() {
             //map.setStyle("https://demotiles.maplibre.org/style.json")
 
             map.setStyle(styleUrl) {
-                //add marker in the map
-                /*map.addMarker(
-                    MarkerOptions()
-                        .setPosition(LatLng(23.8345,90.38044))
-                        .setTitle("Your Location")
 
-                )*/
+                map.setOnMarkerClickListener { marker ->
+                    // Pass data to the bottom sheet fragment
+                    val args = Bundle()
+                    args.putString("text1", marker.title.toString())
+                    args.putString("text2", marker.position.toString())
+                    val bottomSheetFragment = BottomSheetDialog()
+                    bottomSheetFragment.arguments = args
+                    bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
+                    true
+                }
 
                 setMapCurrentLocationLayer()
             }
+
 
             map.cameraPosition = CameraPosition
                 .Builder()
@@ -75,7 +94,7 @@ class MapFragment : Fragment() {
             val locationComponentOptions =
                 LocationComponentOptions.builder(requireContext())
                     .pulseEnabled(true)
-                    .bearingTintColor(Color.RED)
+                    .bearingTintColor(Color.BLACK)
                     .compassAnimationEnabled(true)
                     .build()
 
@@ -91,21 +110,34 @@ class MapFragment : Fragment() {
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+
                     return
                 }
                 locationComponent.isLocationComponentEnabled = true
+
+                if (locationComponent.isLocationComponentEnabled) {
+                    // Get the last known location
+                    val lastLocation = locationComponent.lastKnownLocation
+
+                    // Check if the last known location is not null
+                    if (lastLocation != null) {
+                        val latitude = lastLocation.latitude
+                        val longitude = lastLocation.longitude
+
+                        //add marker in the map
+                        map.addMarker(
+                            MarkerOptions()
+                                .setPosition(LatLng(latitude, longitude))
+                                .title("Your Location")
+                                .setTitle("Your Location")
+                        )
+                    }
+                }
+
                 locationComponent.cameraMode = CameraMode.TRACKING_GPS
 
             }
         }
-
     }
 
     private fun buildLocationComponentActivationOptions(
@@ -124,7 +156,6 @@ class MapFragment : Fragment() {
             )
             .build()
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -161,3 +192,6 @@ class MapFragment : Fragment() {
         mapView.onDestroy()
     }
 }
+
+
+

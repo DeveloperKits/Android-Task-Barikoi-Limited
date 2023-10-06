@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.akashdas.task2barikoi.MapFragment"
+        android:name="com.akashdas.task2barikoi.Fragment.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
     <fragment
@@ -19,5 +19,13 @@
         <action
             android:id="@+id/action_main_to_map"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_main_to_nearbyBank"
+            app:destination="@id/nearbyBankFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/nearbyBankFragment"
+        android:name="com.akashdas.task2barikoi.Fragment.NearbyBankFragment"
+        android:label="fragment_nearby_bank"
+        tools:layout="@layout/fragment_nearby_bank" />
 </navigation>

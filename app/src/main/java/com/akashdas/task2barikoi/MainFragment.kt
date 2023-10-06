@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.akashdas.task2barikoi.databinding.FragmentMainBinding
+import com.akashdas.task2barikoi.utils.areLocationPermissionsGranted
 
 class MainFragment : Fragment() {
 
@@ -25,14 +26,14 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
         // Check if location permissions are granted
-        if (areLocationPermissionsGranted()) {
+        if (areLocationPermissionsGranted(requireContext())) {
 
             binding.yourLocation.setOnClickListener{
                 findNavController().navigate(R.id.action_main_to_map)
             }
 
             binding.nearbyBank.setOnClickListener{
-
+                findNavController().navigate(R.id.action_main_to_nearbyBank)
             }
 
         } else {
@@ -43,18 +44,6 @@ class MainFragment : Fragment() {
 
     }
 
-    private fun areLocationPermissionsGranted(): Boolean {
-        val fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION
-        val coarseLocationPermission = Manifest.permission.ACCESS_COARSE_LOCATION
-        return (ContextCompat.checkSelfPermission(
-            requireContext(),
-            fineLocationPermission
-        ) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    coarseLocationPermission
-                ) == PackageManager.PERMISSION_GRANTED)
-    }
 
     private fun requestLocationPermissions() {
         val fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION
@@ -85,6 +74,7 @@ class MainFragment : Fragment() {
             )
         }
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
