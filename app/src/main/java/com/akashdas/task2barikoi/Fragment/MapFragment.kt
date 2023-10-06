@@ -10,8 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import com.akashdas.task2barikoi.Dialog.BottomSheetDialog
+import com.akashdas.task2barikoi.Model.Place
 import com.akashdas.task2barikoi.R
+import com.akashdas.task2barikoi.db.GetPlaces
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -23,6 +26,7 @@ import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
+import kotlinx.coroutines.launch
 
 
 class MapFragment : Fragment() {
@@ -34,6 +38,7 @@ class MapFragment : Fragment() {
     private lateinit var customInfoWindowTitle: TextView
     private lateinit var customInfoWindowSnippet: TextView
 
+    private val getPlaces = GetPlaces()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,9 +59,10 @@ class MapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val styleId = "osm-liberty"
         val apiKey = getString(R.string.BariKoiApiKey)
+        val styleId = "osm-liberty"
         val styleUrl = "https://map.barikoi.com/styles/$styleId/style.json?key=$apiKey"
+
 
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync {map ->
@@ -76,15 +82,9 @@ class MapFragment : Fragment() {
                     true
                 }
 
+                // Live map location gps tracking
                 setMapCurrentLocationLayer()
             }
-
-
-            map.cameraPosition = CameraPosition
-                .Builder()
-                .target(LatLng(23.8345,90.38044))
-                .zoom(15.0)
-                .build()
         }
     }
 
@@ -124,19 +124,45 @@ class MapFragment : Fragment() {
                         val latitude = lastLocation.latitude
                         val longitude = lastLocation.longitude
 
-                        //add marker in the map
-                        map.addMarker(
-                            MarkerOptions()
-                                .setPosition(LatLng(latitude, longitude))
-                                .title("Your Location")
-                                .setTitle("Your Location")
-                        )
+                        // set camera position
+                        map.cameraPosition = CameraPosition
+                            .Builder()
+                            .target(LatLng(latitude,longitude))
+                            .zoom(15.0)
+                            .build()
+
+                        // get data from api
+                        lifecycleScope.launch {
+                            try {
+                                val response = getPlaces.getNearbyPlaces(longitude, latitude, "bank")
+                                // Handle the response here
+                                val places = response.places
+
+                                // add marker
+                                addMarker(places)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
                     }
                 }
 
                 locationComponent.cameraMode = CameraMode.TRACKING_GPS
 
             }
+        }
+    }
+
+    private fun addMarker(places: List<Place>) {
+
+        for (i in 1..places.size){
+            //add marker in the map
+            map.addMarker(
+                MarkerOptions()
+                    .setPosition(LatLng(places[i].latitude.toDouble(), places[i].latitude.toDouble()))
+                    .setTitle(places[i].name)
+                    .setSnippet(places[i].Address)
+            )
         }
     }
 

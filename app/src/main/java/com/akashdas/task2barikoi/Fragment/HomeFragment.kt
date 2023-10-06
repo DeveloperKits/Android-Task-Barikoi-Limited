@@ -1,4 +1,4 @@
-package com.akashdas.task2barikoi
+package com.akashdas.task2barikoi.Fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -10,12 +10,13 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
-import com.akashdas.task2barikoi.databinding.FragmentMainBinding
+import com.akashdas.task2barikoi.R
+import com.akashdas.task2barikoi.databinding.FragmentHomeBinding
 import com.akashdas.task2barikoi.utils.areLocationPermissionsGranted
 
-class MainFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentHomeBinding
     private val LOCATION_PERMISSION_REQUEST_CODE = 123
     private var permissionDenied = false
 
@@ -23,27 +24,27 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        // Check if location permissions are granted
-        if (areLocationPermissionsGranted(requireContext())) {
-
-            binding.yourLocation.setOnClickListener{
-                findNavController().navigate(R.id.action_main_to_map)
+        binding.yourLocation.setOnClickListener {
+            if (areLocationPermissionsGranted(requireContext())){
+                findNavController().navigate(R.id.action_home_to_map)
+            }else {
+                requestLocationPermissions()
             }
-
-            binding.nearbyBank.setOnClickListener{
-                findNavController().navigate(R.id.action_main_to_nearbyBank)
-            }
-
-        } else {
-            requestLocationPermissions()
         }
 
+        binding.nearbyBank.setOnClickListener {
+            if (areLocationPermissionsGranted(requireContext())){
+                findNavController().navigate(R.id.action_home_to_nearPlace)
+            }else {
+                requestLocationPermissions()
+            }
+        }
+
+        // Inflate the layout for this fragment
         return binding.root
-
     }
-
 
     private fun requestLocationPermissions() {
         val fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION
@@ -74,7 +75,6 @@ class MainFragment : Fragment() {
             )
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
