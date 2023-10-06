@@ -22,7 +22,6 @@ class MapFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //BarikoiAPI.getINSTANCE(requireActivity(), bariKoiApis);
         Mapbox.getInstance(requireActivity())
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         mapView = view.findViewById(R.id.mapView)
@@ -42,11 +41,10 @@ class MapFragment : Fragment() {
             this.map = map
             //map.setStyle("https://demotiles.maplibre.org/style.json")
             map.setStyle(styleUrl) { style->
-                //add amarker in the map
                 map.addMarker(
                     MarkerOptions()
-                        .setPosition(LatLng(23.8345,90.38044))  //set lat lon position of the marker
-                        .setTitle("Map Marker") // set the title of the marker, will show on marker click
+                        .setPosition(LatLng(23.8345,90.38044))
+                        .setTitle("Map Marker")
 
                 )
             }
