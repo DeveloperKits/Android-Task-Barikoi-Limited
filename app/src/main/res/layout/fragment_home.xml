@@ -43,14 +43,14 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/baseline_person_pin_circle_24" />
+                    android:src="@drawable/baseline_account_balance_24" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:text="@string/your_location"
+                    android:text="@string/nearby_bank"
                     android:layout_marginTop="10dp"
                     android:textSize="18sp" />
 
@@ -83,7 +83,7 @@
                     android:id="@+id/bankImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/baseline_account_balance_24" />
+                    android:src="@drawable/baseline_person_pin_circle_24" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -92,7 +92,7 @@
                     android:layout_marginTop="10dp"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:text="@string/nearby_bank" />
+                    android:text="@string/your_location" />
 
             </LinearLayout>
 

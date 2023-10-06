@@ -34,14 +34,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-        binding.nearbyBank.setOnClickListener {
-            if (areLocationPermissionsGranted(requireContext())){
-                findNavController().navigate(R.id.action_home_to_nearPlace)
-            }else {
-                requestLocationPermissions()
-            }
-        }
-
         // Inflate the layout for this fragment
         return binding.root
     }
